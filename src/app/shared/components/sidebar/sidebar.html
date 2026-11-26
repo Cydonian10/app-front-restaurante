@@ -1,0 +1,61 @@
+<button
+  class="fixed top-3 left-3 z-20 rounded-lg border-0 bg-base-200 px-3 py-2 text-base-content focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary md:hidden"
+  type="button"
+  (click)="mobileOpen.set(true)"
+  aria-label="Abrir menú"
+  [attr.aria-expanded]="mobileOpen()"
+  aria-controls="sidebar-navigation"
+>
+  <svg lucideMenu [size]="20" aria-hidden="true"></svg>
+</button>
+@if (mobileOpen()) {
+  <button
+    class="fixed inset-0 z-25 border-0 bg-black/50 md:hidden"
+    type="button"
+    aria-label="Cerrar menú"
+    (click)="close()"
+  ></button>
+}
+<aside
+  class="fixed inset-y-0 left-0 z-30 flex w-58.75 flex-col border-r border-base-300 bg-base-100 shadow-xl transition-transform duration-250 ease-in-out motion-reduce:transition-none md:translate-x-0 md:shadow-none"
+  [class.-translate-x-full]="!mobileOpen()"
+  [class.translate-x-0]="mobileOpen()"
+  id="sidebar-navigation"
+>
+  <div class="flex h-16.25 shrink-0 items-center gap-3 border-b border-base-300 px-3.5 text-sm">
+    <span
+      class="grid size-8.5 place-items-center rounded-[10px] bg-primary/15 font-semibold text-primary"
+      >V.</span
+    >
+    <strong>tienda vasquez</strong>
+    <button
+      class="ml-auto border-0 bg-transparent text-base-content focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary md:hidden"
+      type="button"
+      aria-label="Cerrar menú"
+      (click)="close()"
+    >
+      <svg lucideX [size]="20" aria-hidden="true"></svg>
+    </button>
+  </div>
+  <nav class="flex-1 overflow-auto px-2 py-4" aria-label="Navegación principal">
+    @for (section of sections(); track section.label) {
+      <div class="mx-2 my-4 text-[10px] font-semibold tracking-widest uppercase opacity-55">
+        {{ section.label }}
+      </div>
+      @for (item of section.items; track item.label) {
+        @if (isGroup(item)) {
+          <app-sidebar-menu-group [group]="item" [open]="isOpen(item)" (toggled)="toggle(item)" (selected)="close()" />
+        } @else {
+          <app-sidebar-menu-link [item]="item" (selected)="close()" />
+        }
+      }
+    }
+  </nav>
+  <div class="flex items-center gap-2.5 border-t border-base-300 p-4 text-xs">
+    <span
+      class="grid size-8.5 place-items-center rounded-[10px] bg-primary/15 font-semibold text-primary"
+      >A</span
+    >
+    <div><strong>ADMIN</strong><small class="block opacity-60">Administración</small></div>
+  </div>
+</aside>

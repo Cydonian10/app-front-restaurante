@@ -1,0 +1,40 @@
+<div class="relative inline-block text-left">
+  <button
+    appButton
+    [variant]="variant()"
+    [color]="color()"
+    [size]="size()"
+    type="button"
+    ngMenuTrigger
+    [menu]="menu"
+    [attr.aria-label]="label()"
+  >
+    @if (triggerContent(); as content) {
+      <ng-container [ngTemplateOutlet]="content" />
+    } @else {
+      {{ label() }}
+    }
+  </button>
+  <div
+    ngMenu
+    #menu="ngMenu"
+    [class.hidden]="!menu.visible()"
+    (itemSelected)="select($event)"
+    class="absolute left-0 top-full z-50 mt-2 min-w-56 rounded-xl bg-base-200 p-1.5 text-base-content shadow-xl outline-1 -outline-offset-1 outline-base-content/10"
+  >
+    <ng-template ngMenuContent>
+      @for (item of items(); track item.value) {
+        <button
+          ngMenuItem
+          type="button"
+          [value]="item.value"
+          [disabled]="!!item.disabled"
+          [class.text-error]="item.destructive"
+          class="block w-full rounded-lg px-3 py-2 text-left text-sm outline-none hover:bg-base-300 focus:bg-base-300 disabled:cursor-not-allowed disabled:opacity-50"
+        >
+          {{ item.label }}
+        </button>
+      }
+    </ng-template>
+  </div>
+</div>
