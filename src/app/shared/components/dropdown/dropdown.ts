@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, TemplateRef, input, output } from '@angular/core';
 import { NgTemplateOutlet } from '@angular/common';
 import { Menu, MenuContent, MenuItem, MenuTrigger } from '@angular/aria/menu';
-import { Button } from '../../directives/button';
+import { Button } from '../button/button';
 
 export interface DropdownItem {
   value: string;
@@ -19,7 +19,9 @@ export interface DropdownItem {
 export class Dropdown {
   readonly label = input('Acciones');
   readonly variant = input<'solid' | 'soft' | 'outline' | 'ghost'>('soft');
-  readonly color = input<'primary' | 'secondary' | 'success' | 'warning' | 'error' | 'neutral'>('primary');
+  readonly color = input<'primary' | 'secondary' | 'success' | 'warning' | 'error' | 'neutral'>(
+    'primary',
+  );
   readonly size = input<'sm' | 'md' | 'lg'>('md');
   readonly triggerContent = input<TemplateRef<unknown> | null>(null);
   readonly items = input.required<readonly DropdownItem[]>();
