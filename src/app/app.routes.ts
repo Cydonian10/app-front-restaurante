@@ -14,7 +14,47 @@ export const routes: Routes = [
   {
     path: 'admin',
     canActivate: [authGuard],
-    loadComponent: () => import('./auth/pages/panel/panel.page').then((m) => m.PanelPage),
+    canActivateChild: [authGuard],
+    loadComponent: () => import('./layouts/admin/admin').then((m) => m.AdminLayout),
+    children: [
+      {
+        path: '',
+        pathMatch: 'full',
+        loadComponent: () => import('./auth/pages/panel/panel.page').then((m) => m.PanelPage),
+      },
+      {
+        path: 'productos',
+        loadComponent: () =>
+          import('./productos/pages/productos-access.page').then((m) => m.ProductosAccessPage),
+        children: [
+          {
+            path: '',
+            pathMatch: 'full',
+            loadComponent: () =>
+              import('./productos/pages/productos-placeholder.page').then(
+                (m) => m.ProductosPlaceholderPage,
+              ),
+            data: { title: 'Productos' },
+          },
+          {
+            path: 'crear',
+            loadComponent: () =>
+              import('./productos/pages/productos-placeholder.page').then(
+                (m) => m.ProductosPlaceholderPage,
+              ),
+            data: { title: 'Crear producto' },
+          },
+          {
+            path: ':id/editar',
+            loadComponent: () =>
+              import('./productos/pages/productos-placeholder.page').then(
+                (m) => m.ProductosPlaceholderPage,
+              ),
+            data: { title: 'Editar producto' },
+          },
+        ],
+      },
+    ],
   },
   { path: '**', redirectTo: 'auth/login' },
 ];
