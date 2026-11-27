@@ -17,4 +17,8 @@ export class AlertViewport {
   protected readonly right = computed(() =>
     this.service.alerts().filter((alert) => alert.position === 'top-right'),
   );
+  protected readonly sides = computed(() => [
+    { position: 'top-left', alerts: this.left() },
+    { position: 'top-right', alerts: this.right() },
+  ]);
 }
