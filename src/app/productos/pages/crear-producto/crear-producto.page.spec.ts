@@ -99,7 +99,7 @@ describe('CrearProductoPage', () => {
     );
     await vi.waitFor(() => {
       fixture.detectChanges();
-      expect(fixture.nativeElement.textContent).toContain('No se pudo crear');
+      expect(TestBed.inject(AlertService).alerts().at(-1)?.message).toContain('No se pudo crear');
     });
     expect(
       (fixture.nativeElement.querySelector('#producto-nombre') as HTMLInputElement).value,
@@ -161,7 +161,7 @@ describe('CrearProductoPage', () => {
       });
       await vi.waitFor(() => {
         fixture.detectChanges();
-        expect(fixture.nativeElement.textContent).toContain('No se pudo crear');
+        expect(TestBed.inject(AlertService).alerts().at(-1)?.message).toContain('No se pudo crear');
       });
       expect(fixture.nativeElement.querySelector('img').getAttribute('src')).toBe('blob:imagen');
       submit();

@@ -85,7 +85,7 @@ describe('EditarProductoPage', () => {
       req.flush({}, { status: 500, statusText: 'Error' });
     });
     await vi.waitFor(() => {
-      expect(harness.routeNativeElement?.textContent).toContain('No se pudo guardar');
+      expect(TestBed.inject(AlertService).alerts().at(-1)?.message).toContain('No se pudo guardar');
     });
     expect(name.value).toBe('Café especial');
     const navigate = vi.spyOn(TestBed.inject(Router), 'navigateByUrl').mockResolvedValue(true);

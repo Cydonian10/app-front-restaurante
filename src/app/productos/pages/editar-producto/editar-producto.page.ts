@@ -42,7 +42,6 @@ import { AlertService } from '../../../shared/services/alert';
         [producto]="producto"
         [savingEnabled]="true"
         [saving]="mutation.isPending()"
-        [error]="mutation.isError() ? 'No se pudo guardar el producto. Inténtalo de nuevo.' : ''"
         (saved)="save($event)"
       />
     }

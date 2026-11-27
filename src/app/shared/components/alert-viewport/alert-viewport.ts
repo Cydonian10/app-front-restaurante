@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { AlertService } from '../../services/alert';
 import { Alert } from '../alert/alert';
 
@@ -11,4 +11,10 @@ import { Alert } from '../alert/alert';
 })
 export class AlertViewport {
   protected readonly service = inject(AlertService);
+  protected readonly left = computed(() =>
+    this.service.alerts().filter((alert) => alert.position === 'top-left'),
+  );
+  protected readonly right = computed(() =>
+    this.service.alerts().filter((alert) => alert.position === 'top-right'),
+  );
 }

@@ -3,7 +3,6 @@ import { FormField, form, maxLength, pattern, required } from '@angular/forms/si
 import { RouterLink } from '@angular/router';
 import { LucideSave } from '@lucide/angular';
 import { Button } from '../../../shared/components/button/button';
-import { Alert } from '../../../shared/components/alert/alert';
 import { ImageSelection, ImageUpload } from '../../../shared/components/image-upload/image-upload';
 import { Input } from '../../../shared/components/input/input';
 import { DatosProducto, Producto, TipoProducto } from '../../interfaces/producto';
@@ -11,14 +10,13 @@ import { TIPOS_PRODUCTO } from '../../interfaces/tipos-producto';
 
 @Component({
   selector: 'app-producto-form',
-  imports: [FormField, Input, Button, RouterLink, ImageUpload, LucideSave, Alert],
+  imports: [FormField, Input, Button, RouterLink, ImageUpload, LucideSave],
   templateUrl: './producto-form.html',
 })
 export class ProductoForm {
   readonly producto = input<Producto | null>(null);
   readonly savingEnabled = input(false);
   readonly saving = input(false);
-  readonly error = input('');
   readonly saved = output<DatosProducto>();
   protected readonly tipos = TIPOS_PRODUCTO;
   protected readonly attempted = signal(false);

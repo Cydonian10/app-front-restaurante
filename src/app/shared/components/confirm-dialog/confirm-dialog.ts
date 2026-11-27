@@ -8,13 +8,12 @@ import {
   viewChild,
 } from '@angular/core';
 import { Button } from '../button/button';
-import { Alert } from '../alert/alert';
 
 let nextId = 0;
 
 @Component({
   selector: 'app-confirm-dialog',
-  imports: [Button, Alert],
+  imports: [Button],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './confirm-dialog.html',
 })
@@ -25,7 +24,6 @@ export class ConfirmDialog {
   readonly confirmLabel = input('Confirmar');
   readonly cancelLabel = input('Cancelar');
   readonly busy = input(false);
-  readonly error = input('');
   readonly confirmed = output<void>();
   readonly cancelled = output<void>();
   protected readonly titleId = `confirm-dialog-title-${++nextId}`;

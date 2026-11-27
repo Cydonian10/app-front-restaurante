@@ -5,13 +5,17 @@ export interface AlertOptions {
   title?: string;
   /** Tiempo visible en milisegundos; 0 mantiene la alerta hasta cerrarla. */
   duration?: number;
+  position?: AlertPosition;
 }
+
+export type AlertPosition = 'top-left' | 'top-right';
 
 export interface AlertNotification {
   id: number;
   type: AlertType;
   message: string;
   title: string;
+  position: AlertPosition;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -31,7 +35,13 @@ export class AlertService implements OnDestroy {
     };
     this.items.update((items) => [
       ...items,
-      { id, type, message, title: options.title ?? titles[type] },
+      {
+        id,
+        type,
+        message,
+        title: options.title ?? titles[type],
+        position: options.position ?? 'top-right',
+      },
     ]);
     const duration = options.duration ?? 5000;
     if (duration > 0 && Number.isFinite(duration)) {

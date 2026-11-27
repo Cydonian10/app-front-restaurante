@@ -163,7 +163,6 @@
     [message]="'¿Dar de baja ' + (selected()?.nombre ?? '') + '?'"
     confirmLabel="Dar de baja"
     [busy]="deleteMutation.isPending()"
-    [error]="deleteError()"
     (cancelled)="selected.set(null)"
     (confirmed)="confirmDelete()"
   />

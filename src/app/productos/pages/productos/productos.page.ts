@@ -35,7 +35,6 @@ export class ProductosPage {
   private readonly service = inject(ProductosService);
   private readonly client = inject(QueryClient);
   private readonly alerts = inject(AlertService);
-  protected readonly deleteError = signal('');
   protected readonly selected = signal<Producto | null>(null);
   protected readonly availabilityMutation = injectMutation(() => this.service.updateAvailability());
   protected readonly deleteMutation = injectMutation(() => this.service.delete());
@@ -83,13 +82,11 @@ export class ProductosPage {
     }
   }
   protected selectForDeletion(producto: Producto): void {
-    this.deleteError.set('');
     this.selected.set(producto);
   }
   protected async confirmDelete(): Promise<void> {
     const producto = this.selected();
     if (!producto || this.deleteMutation.isPending()) return;
-    this.deleteError.set('');
     try {
       await this.deleteMutation.mutateAsync(producto.id);
       if (this.page() > 1 && this.query.data()?.items.length === 1)
@@ -98,7 +95,8 @@ export class ProductosPage {
       await this.client.invalidateQueries({ queryKey: ['productos'] });
       this.alerts.success('Producto dado de baja correctamente.');
     } catch {
-      this.deleteError.set('No se pudo dar de baja el producto. Inténtalo de nuevo.');
+      this.selected.set(null);
+      this.alerts.error('No se pudo dar de baja el producto. Inténtalo de nuevo.');
     }
   }
 }

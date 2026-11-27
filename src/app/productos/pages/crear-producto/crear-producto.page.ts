@@ -27,7 +27,6 @@ import { AlertService } from '../../../shared/services/alert';
     <app-producto-form
       [savingEnabled]="true"
       [saving]="mutation.isPending()"
-      [error]="mutation.isError() ? 'No se pudo crear el producto. Inténtalo de nuevo.' : ''"
       (saved)="save($event)"
     />
   </section>`,

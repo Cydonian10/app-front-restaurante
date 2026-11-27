@@ -1,17 +1,31 @@
-<section
-  aria-label="Notificaciones"
-  class="pointer-events-none fixed top-4 left-4 z-[1000] flex max-h-[calc(100dvh-2rem)] w-[min(24rem,calc(100vw-2rem))] flex-col gap-3 overflow-y-auto"
->
-  @for (alert of service.alerts(); track alert.id) {
-    <div class="pointer-events-auto" animate.enter="alert-enter" animate.leave="alert-leave">
-      <app-alert
-        [type]="alert.type"
-        [title]="alert.title"
-        [message]="alert.message"
-        [dismissible]="true"
-        [floating]="true"
-        (closed)="service.dismiss(alert.id)"
-      />
-    </div>
-  }
-</section>
+@for (
+  side of [
+    { position: 'top-left', alerts: left() },
+    { position: 'top-right', alerts: right() },
+  ];
+  track side.position
+) {
+  <section
+    aria-label="Notificaciones"
+    class="pointer-events-none fixed top-4 z-[1000] flex max-h-[calc(100dvh-2rem)] flex-col gap-3 overflow-y-auto"
+    [class]="
+      (side.position === 'top-right' ? 'right-4 right-side ' : 'left-4 ') +
+      (left().length && right().length
+        ? 'w-[min(24rem,calc((100vw-3rem)/2))]'
+        : 'w-[min(24rem,calc(100vw-2rem))]')
+    "
+  >
+    @for (alert of side.alerts; track alert.id) {
+      <div class="pointer-events-auto" animate.enter="alert-enter" animate.leave="alert-leave">
+        <app-alert
+          [type]="alert.type"
+          [title]="alert.title"
+          [message]="alert.message"
+          [dismissible]="true"
+          [floating]="true"
+          (closed)="service.dismiss(alert.id)"
+        />
+      </div>
+    }
+  </section>
+}

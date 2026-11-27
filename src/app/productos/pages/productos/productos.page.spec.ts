@@ -100,6 +100,36 @@ describe('ProductosPage', () => {
     });
   });
 
+  it('cierra el diálogo y muestra una notificación flotante si falla la baja', async () => {
+    const fixture = TestBed.createComponent(ProductosPage);
+    fixture.detectChanges();
+    const dialog = fixture.nativeElement.querySelector('dialog') as HTMLDialogElement;
+    dialog.showModal = vi.fn(() => dialog.setAttribute('open', ''));
+    dialog.close = vi.fn(() => dialog.removeAttribute('open'));
+    requests.expectOne((r) => r.url.endsWith('/products/admin')).flush(response);
+    await vi.waitFor(() => {
+      fixture.detectChanges();
+      expect(
+        fixture.nativeElement.querySelector('button[aria-label="Dar de baja: Lomo"]'),
+      ).toBeTruthy();
+    });
+    fixture.nativeElement.querySelector('button[aria-label="Dar de baja: Lomo"]').click();
+    fixture.detectChanges();
+    dialog.querySelectorAll('button')[1].click();
+    await vi.waitFor(() =>
+      requests
+        .expectOne((r) => r.method === 'DELETE')
+        .flush({}, { status: 500, statusText: 'Error' }),
+    );
+    await vi.waitFor(() => {
+      fixture.detectChanges();
+      expect(dialog.open).toBe(false);
+      expect(TestBed.inject(AlertService).alerts().at(-1)?.message).toContain(
+        'No se pudo dar de baja',
+      );
+    });
+  });
+
   it('cambia disponibilidad y confirma la baja antes de actualizar el listado', async () => {
     const fixture = TestBed.createComponent(ProductosPage);
     fixture.detectChanges();

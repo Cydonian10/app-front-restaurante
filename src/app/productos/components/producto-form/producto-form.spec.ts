@@ -36,7 +36,6 @@ describe('ProductoForm', () => {
     form.dispatchEvent(new Event('submit', { cancelable: true }));
     fixture.detectChanges();
     expect(saved).toHaveBeenCalledWith({ nombre: 'Lomo saltado', precio: '12.50', tipo: 'BEBIDA' });
-    fixture.componentRef.setInput('error', 'Error al guardar');
     fixture.detectChanges();
     expect(
       (fixture.nativeElement.querySelector('#producto-nombre') as HTMLInputElement).value,
