@@ -1,0 +1,82 @@
+<form
+  novalidate
+  (submit)="submit($event)"
+  class="mt-6 max-w-2xl space-y-5 rounded-xl border border-base-300 bg-base-100 p-5"
+>
+  <app-input
+    label="Nombre"
+    inputId="producto-nombre"
+    [formField]="fields.nombre"
+    [submitted]="attempted()"
+  />
+  <div>
+    <label for="producto-descripcion" class="block text-xs font-semibold"
+      >Descripción (opcional)</label
+    >
+    <textarea
+      id="producto-descripcion"
+      [formField]="fields.descripcion"
+      rows="3"
+      class="mt-2 w-full rounded-xl bg-base-300 px-4 py-2.5 text-sm focus-visible:outline-2 focus-visible:outline-primary"
+    ></textarea>
+  </div>
+  <app-input
+    label="Precio (S/)"
+    inputId="producto-precio"
+    placeholder="0.00"
+    [formField]="fields.precio"
+    [submitted]="attempted()"
+  />
+  <div>
+    <label for="producto-tipo" class="block text-xs font-semibold">Tipo</label>
+    <select
+      id="producto-tipo"
+      [formField]="fields.tipo"
+      [attr.aria-invalid]="attempted() && fields.tipo().invalid() ? 'true' : null"
+      [attr.aria-describedby]="attempted() && fields.tipo().invalid() ? 'tipo-error' : null"
+      class="mt-2 w-full rounded-xl bg-base-300 px-4 py-2.5 text-sm focus-visible:outline-2 focus-visible:outline-primary"
+    >
+      <option value="">Selecciona un tipo</option>
+      @for (tipo of tipos; track tipo.value) {
+        <option [value]="tipo.value">{{ tipo.label }}</option>
+      }
+    </select>
+    @if (attempted() && fields.tipo().invalid()) {
+      <p id="tipo-error" role="alert" class="mt-1 text-xs text-error">Selecciona un tipo.</p>
+    }
+  </div>
+  <div>
+    <label for="producto-imagen" class="block text-xs font-semibold">Imagen (opcional)</label>
+    @if (producto()?.imageUrl; as imageUrl) {
+      <img
+        [src]="imageUrl"
+        alt="Imagen actual del producto"
+        class="mt-2 size-24 rounded-lg object-cover"
+      />
+    }
+    <input
+      id="producto-imagen"
+      type="file"
+      accept="image/jpeg,image/png,image/webp"
+      (change)="selectImage($event)"
+      [attr.aria-invalid]="imageError() ? 'true' : null"
+      [attr.aria-describedby]="imageError() ? 'imagen-error' : 'imagen-ayuda'"
+      class="mt-2 block w-full text-sm"
+    />
+    <p id="imagen-ayuda" class="mt-1 text-xs text-base-content/65">
+      JPG, PNG o WebP de hasta 5 MB.
+    </p>
+    @if (imageError()) {
+      <p id="imagen-error" role="alert" class="mt-1 text-xs text-error">{{ imageError() }}</p>
+    }
+  </div>
+  @if (error()) {
+    <p role="alert" class="text-sm text-error">{{ error() }}</p>
+  }
+  <div class="flex flex-wrap items-center gap-3">
+    <button appButton type="submit" [disabled]="saving() || !savingEnabled()">
+      {{ saving() ? 'Guardando…' : 'Guardar producto' }}
+    </button>
+    <a routerLink="/admin/productos" class="text-primary underline">Cancelar</a>
+  </div>
+</form>

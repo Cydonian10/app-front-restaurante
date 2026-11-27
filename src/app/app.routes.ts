@@ -31,26 +31,21 @@ export const routes: Routes = [
             path: '',
             pathMatch: 'full',
             loadComponent: () =>
-              import('./productos/pages/productos-placeholder.page').then(
-                (m) => m.ProductosPlaceholderPage,
-              ),
-            data: { title: 'Productos' },
+              import('./productos/pages/productos/productos.page').then((m) => m.ProductosPage),
           },
           {
             path: 'crear',
             loadComponent: () =>
-              import('./productos/pages/productos-placeholder.page').then(
-                (m) => m.ProductosPlaceholderPage,
+              import('./productos/pages/crear-producto/crear-producto.page').then(
+                (m) => m.CrearProductoPage,
               ),
-            data: { title: 'Crear producto' },
           },
           {
             path: ':id/editar',
             loadComponent: () =>
-              import('./productos/pages/productos-placeholder.page').then(
-                (m) => m.ProductosPlaceholderPage,
+              import('./productos/pages/editar-producto/editar-producto.page').then(
+                (m) => m.EditarProductoPage,
               ),
-            data: { title: 'Editar producto' },
           },
         ],
       },

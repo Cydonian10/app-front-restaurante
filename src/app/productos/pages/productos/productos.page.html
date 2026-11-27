@@ -1,0 +1,111 @@
+<section aria-labelledby="productos-title" class="mx-auto max-w-7xl">
+  <header class="flex flex-wrap items-start justify-between gap-4">
+    <div>
+      <h1 id="productos-title" class="text-3xl font-semibold">Nuestra carta</h1>
+      <p class="mt-2 text-sm text-base-content/65">
+        Organiza tus productos y mantenlos al día para cada pedido.
+      </p>
+    </div>
+    <a
+      routerLink="/admin/productos/crear"
+      class="rounded-xl bg-primary px-4 py-2.5 font-medium text-primary-content focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+      >Agregar producto</a
+    >
+  </header>
+
+  <div class="mt-6 grid gap-4 rounded-xl border border-base-300 bg-base-100 p-4 sm:grid-cols-2">
+    <app-input
+      label="Buscar por nombre"
+      inputId="buscar-producto"
+      type="search"
+      placeholder="Buscar producto"
+      [value]="nombre()"
+      (valueChange)="changeSearch($event)"
+    />
+    <div>
+      <label for="tipo-producto" class="block text-xs font-semibold">Tipo de producto</label>
+      <select
+        id="tipo-producto"
+        class="mt-2 w-full rounded-xl bg-base-300 px-4 py-2.5 text-sm outline-2 outline-transparent focus-visible:outline-primary"
+        [value]="tipo()"
+        (change)="changeType($any($event.target).value)"
+      >
+        <option value="">Todos los tipos</option>
+        @for (tipo of tipos; track tipo.value) {
+          <option [value]="tipo.value">{{ tipo.label }}</option>
+        }
+      </select>
+    </div>
+  </div>
+
+  <ng-template #imagen let-producto>
+    @if (producto.imageUrl) {
+      <img
+        [src]="producto.imageUrl"
+        [alt]="producto.nombre"
+        class="size-12 rounded-lg object-cover"
+      />
+    } @else {
+      <span
+        class="grid size-12 place-items-center rounded-lg bg-base-300 text-xs text-base-content/60"
+        aria-label="Sin imagen"
+        >—</span
+      >
+    }
+  </ng-template>
+  <ng-template #tipoCelda let-producto>{{ typeLabel(producto.tipo) }}</ng-template>
+  <ng-template #precio let-producto>S/ {{ producto.precio | number: '1.2-2' }}</ng-template>
+  <ng-template #disponibilidad let-producto>
+    <span
+      [class.text-success]="producto.disponible"
+      [class.text-base-content/60]="!producto.disponible"
+      >{{ producto.disponible ? 'Disponible' : 'No disponible' }}</span
+    >
+  </ng-template>
+  <ng-template #acciones let-producto>
+    <div class="flex items-center gap-3">
+      <a [routerLink]="['/admin/productos', producto.id, 'editar']" class="text-primary underline"
+        >Editar</a
+      >
+      <button type="button" disabled class="cursor-not-allowed text-base-content/50">
+        Dar de baja
+      </button>
+    </div>
+  </ng-template>
+
+  <div class="mt-6" aria-live="polite">
+    @if (query.isError()) {
+      <div role="alert" class="rounded-xl border border-error/30 p-4">
+        <p>No se pudieron cargar los productos.</p>
+        <button type="button" class="mt-2 text-primary underline" (click)="query.refetch()">
+          Reintentar
+        </button>
+      </div>
+    } @else {
+      @if (query.data(); as data) {
+        <p class="mb-3 text-sm text-base-content/65">{{ data.total }} productos encontrados</p>
+      }
+      <app-table
+        [columns]="columns"
+        [rows]="query.data()?.items ?? []"
+        [loading]="query.isPending()"
+        [cellTemplates]="{
+          imageUrl: imagen,
+          tipo: tipoCelda,
+          precio: precio,
+          disponible: disponibilidad,
+          acciones: acciones,
+        }"
+      />
+      @if (query.data(); as data) {
+        <div class="mt-4">
+          <app-pagination
+            [page]="data.page"
+            [totalPages]="data.totalPages"
+            (pageChange)="page.set($event)"
+          />
+        </div>
+      }
+    }
+  </div>
+</section>
