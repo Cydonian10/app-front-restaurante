@@ -1,0 +1,28 @@
+<div class="overflow-x-auto rounded-xl border border-base-content/10 bg-base-200">
+  <table class="w-full min-w-lg text-left text-sm" [attr.aria-busy]="loading()">
+    <thead
+      class="border-b border-base-content/10 bg-base-300/50 text-xs uppercase tracking-wider text-base-content/60"
+    >
+      <tr>
+        @for (column of columns(); track column.key) {
+          <th scope="col" class="px-5 py-4 font-medium">{{ column.label }}</th>
+        }
+      </tr>
+    </thead>
+    <tbody>
+      @for (row of rows(); track $index) {
+        <tr class="border-b border-base-content/5 last:border-0 hover:bg-base-300/40">
+          @for (column of columns(); track column.key) {
+            <td class="px-5 py-4">{{ row[column.key] }}</td>
+          }
+        </tr>
+      } @empty {
+        <tr>
+          <td [attr.colspan]="columns().length" class="px-5 py-10 text-center text-base-content/60">
+            {{ loading() ? 'Cargando datos…' : 'No hay registros para mostrar.' }}
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>

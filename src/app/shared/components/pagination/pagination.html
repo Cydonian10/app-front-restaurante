@@ -1,0 +1,39 @@
+@if (totalPages() > 0) {
+  <nav aria-label="Paginación" class="flex flex-wrap items-center gap-1.5">
+    <button
+      type="button"
+      class="rounded-lg px-3 py-2 text-sm text-base-content/70 hover:bg-base-300 focus-visible:outline-2 focus-visible:outline-primary disabled:opacity-35"
+      [disabled]="disabled() || page() <= 1"
+      (click)="select(page() - 1)"
+    >
+      Anterior
+    </button>
+    @for (item of items(); track item) {
+      @if (typeof item === 'number') {
+        <button
+          type="button"
+          class="min-w-9 rounded-lg px-2 py-2 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:opacity-50"
+          [class.bg-primary]="item === page()"
+          [class.text-primary-content]="item === page()"
+          [class.hover:bg-base-300]="item !== page()"
+          [attr.aria-current]="item === page() ? 'page' : null"
+          [attr.aria-label]="'Página ' + item"
+          [disabled]="disabled()"
+          (click)="select(item)"
+        >
+          {{ item }}
+        </button>
+      } @else {
+        <span aria-hidden="true" class="px-1 text-base-content/50">…</span>
+      }
+    }
+    <button
+      type="button"
+      class="rounded-lg px-3 py-2 text-sm text-base-content/70 hover:bg-base-300 focus-visible:outline-2 focus-visible:outline-primary disabled:opacity-35"
+      [disabled]="disabled() || page() >= totalPages()"
+      (click)="select(page() + 1)"
+    >
+      Siguiente
+    </button>
+  </nav>
+}

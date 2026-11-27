@@ -1,0 +1,5 @@
+# spec workflow configuration
+# AutoCreateBranch controls automatic branch creation by /spec-impl.
+AutoCreateBranch: true
+# AutoCommitSteps controls commits after completed implementation steps.
+AutoCommitSteps: false
