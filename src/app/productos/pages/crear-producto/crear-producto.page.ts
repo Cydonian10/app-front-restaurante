@@ -1,16 +1,29 @@
 import { Component, inject } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
+import { LucideArrowLeft } from '@lucide/angular';
 import { injectMutation, QueryClient } from '@tanstack/angular-query';
 import { ProductoForm } from '../../components/producto-form/producto-form';
 import { DatosProducto } from '../../interfaces/producto';
 import { ProductosService } from '../../services/productos.service';
 import { ProductosNoticeService } from '../../services/productos-notice.service';
+import { Button } from '../../../shared/components/button/button';
 
 @Component({
   selector: 'app-crear-producto',
-  imports: [ProductoForm],
+  imports: [ProductoForm, RouterLink, Button, LucideArrowLeft],
   template: `<section class="mx-auto max-w-7xl">
-    <h1 class="text-3xl font-semibold">Crear producto</h1>
+    <a
+      appButton
+      routerLink="/admin/productos"
+      variant="ghost"
+      color="neutral"
+      size="sm"
+      class="-ml-3 mb-5"
+    >
+      <svg lucideArrowLeft class="size-4" aria-hidden="true"></svg> Volver a productos
+    </a>
+    <h1 class="text-3xl font-semibold tracking-tight">Crear producto</h1>
+    <p class="mt-2 text-sm text-base-content/65">Añade un nuevo producto a tu carta.</p>
     <app-producto-form
       [savingEnabled]="true"
       [saving]="mutation.isPending()"

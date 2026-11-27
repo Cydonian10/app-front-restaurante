@@ -1,0 +1,74 @@
+<div
+  class="overflow-hidden rounded-2xl border border-dashed border-base-content/25 bg-base-100 transition-colors focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-secondary"
+  [class]="dragging() ? 'border-secondary bg-secondary/10' : ''"
+  (dragover)="dragOver($event)"
+  (dragleave)="dragLeave($event)"
+  (drop)="drop($event)"
+>
+  <input
+    [id]="inputId()"
+    type="file"
+    accept="image/jpeg,image/png,image/webp"
+    class="sr-only"
+    aria-label="Seleccionar imagen"
+    [disabled]="disabled()"
+    [attr.aria-invalid]="error() ? 'true' : null"
+    [attr.aria-describedby]="error() ? inputId() + '-error' : inputId() + '-help'"
+    (change)="select($event)"
+  />
+  <label
+    [for]="inputId()"
+    class="flex min-h-54 cursor-pointer flex-col items-center justify-center gap-3 px-5 py-6 text-center"
+    [class.cursor-not-allowed]="disabled()"
+  >
+    @if (displayedImage(); as url) {
+      <img
+        [src]="url"
+        [alt]="file() ? 'Vista previa de la imagen seleccionada' : 'Imagen actual'"
+        class="h-32 w-full rounded-xl object-contain"
+      />
+      <span class="max-w-full truncate text-sm font-semibold text-base-content">{{
+        file()?.name || 'Imagen actual'
+      }}</span>
+      <span class="text-xs text-base-content/65"
+        >Arrastra otra imagen o
+        <span class="font-semibold text-secondary">selecciona un archivo</span></span
+      >
+    } @else {
+      <span class="grid size-12 place-items-center rounded-2xl bg-secondary/15 text-secondary">
+        <svg lucideCloudUpload class="size-6" aria-hidden="true"></svg>
+      </span>
+      <span class="text-sm font-semibold text-base-content">Arrastra tu imagen aquí</span>
+      <span class="text-xs text-base-content/65"
+        >o <span class="font-semibold text-secondary">selecciona un archivo</span></span
+      >
+    }
+  </label>
+</div>
+<div class="mt-3 flex items-start justify-between gap-3">
+  <p
+    [id]="inputId() + '-help'"
+    class="flex items-center gap-1.5 text-xs leading-5 text-base-content/60"
+  >
+    <svg lucideImage class="size-3.5 shrink-0" aria-hidden="true"></svg>
+    JPG, PNG o WebP, hasta 5 MB.
+  </p>
+  @if (file() || error()) {
+    <button
+      appButton
+      type="button"
+      variant="ghost"
+      color="neutral"
+      size="sm"
+      class="-mt-2 -mr-2"
+      [disabled]="disabled()"
+      (click)="clear()"
+    >
+      <svg lucideX class="size-3.5" aria-hidden="true"></svg>
+      Quitar selección
+    </button>
+  }
+</div>
+@if (error()) {
+  <p [id]="inputId() + '-error'" role="alert" class="mt-2 text-xs text-error">{{ error() }}</p>
+}

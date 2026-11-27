@@ -1,82 +1,91 @@
 <form
   novalidate
   (submit)="submit($event)"
-  class="mt-6 max-w-2xl space-y-5 rounded-xl border border-base-300 bg-base-100 p-5"
+  class="mt-7 overflow-hidden rounded-2xl border border-base-content/10 bg-base-200"
 >
-  <app-input
-    label="Nombre"
-    inputId="producto-nombre"
-    [formField]="fields.nombre"
-    [submitted]="attempted()"
-  />
-  <div>
-    <label for="producto-descripcion" class="block text-xs font-semibold"
-      >Descripción (opcional)</label
-    >
-    <textarea
-      id="producto-descripcion"
-      [formField]="fields.descripcion"
-      rows="3"
-      class="mt-2 w-full rounded-xl bg-base-300 px-4 py-2.5 text-sm focus-visible:outline-2 focus-visible:outline-primary"
-    ></textarea>
-  </div>
-  <app-input
-    label="Precio (S/)"
-    inputId="producto-precio"
-    placeholder="0.00"
-    [formField]="fields.precio"
-    [submitted]="attempted()"
-  />
-  <div>
-    <label for="producto-tipo" class="block text-xs font-semibold">Tipo</label>
-    <select
-      id="producto-tipo"
-      [formField]="fields.tipo"
-      [attr.aria-invalid]="attempted() && fields.tipo().invalid() ? 'true' : null"
-      [attr.aria-describedby]="attempted() && fields.tipo().invalid() ? 'tipo-error' : null"
-      class="mt-2 w-full rounded-xl bg-base-300 px-4 py-2.5 text-sm focus-visible:outline-2 focus-visible:outline-primary"
-    >
-      <option value="">Selecciona un tipo</option>
-      @for (tipo of tipos; track tipo.value) {
-        <option [value]="tipo.value">{{ tipo.label }}</option>
-      }
-    </select>
-    @if (attempted() && fields.tipo().invalid()) {
-      <p id="tipo-error" role="alert" class="mt-1 text-xs text-error">Selecciona un tipo.</p>
-    }
-  </div>
-  <div>
-    <label for="producto-imagen" class="block text-xs font-semibold">Imagen (opcional)</label>
-    @if (producto()?.imageUrl; as imageUrl) {
-      <img
-        [src]="imageUrl"
-        alt="Imagen actual del producto"
-        class="mt-2 size-24 rounded-lg object-cover"
+  <div class="grid gap-8 p-5 sm:p-7 lg:grid-cols-[minmax(0,1fr)_minmax(16rem,0.62fr)] lg:gap-12">
+    <section aria-labelledby="detalles-producto" class="space-y-5">
+      <div class="border-b border-base-content/10 pb-4">
+        <h2 id="detalles-producto" class="text-lg font-semibold">Detalles del producto</h2>
+        <p class="mt-1 text-sm text-base-content/60">
+          Completa la información que verás en tu carta.
+        </p>
+      </div>
+      <app-input
+        label="Nombre"
+        inputId="producto-nombre"
+        placeholder="Ej. Lomo saltado"
+        [formField]="fields.nombre"
+        [submitted]="attempted()"
       />
-    }
-    <input
-      id="producto-imagen"
-      type="file"
-      accept="image/jpeg,image/png,image/webp"
-      (change)="selectImage($event)"
-      [attr.aria-invalid]="imageError() ? 'true' : null"
-      [attr.aria-describedby]="imageError() ? 'imagen-error' : 'imagen-ayuda'"
-      class="mt-2 block w-full text-sm"
-    />
-    <p id="imagen-ayuda" class="mt-1 text-xs text-base-content/65">
-      JPG, PNG o WebP de hasta 5 MB.
-    </p>
-    @if (imageError()) {
-      <p id="imagen-error" role="alert" class="mt-1 text-xs text-error">{{ imageError() }}</p>
-    }
+      <div>
+        <label for="producto-descripcion" class="block text-xs font-semibold"
+          >Descripción <span class="font-normal text-base-content/55">(opcional)</span></label
+        >
+        <textarea
+          id="producto-descripcion"
+          [formField]="fields.descripcion"
+          rows="4"
+          placeholder="Cuenta un poco más sobre este producto"
+          class="mt-2 w-full resize-y rounded-xl bg-base-300 px-4 py-2.5 text-sm outline-2 outline-transparent placeholder:text-base-content/45 focus-visible:outline-secondary"
+        ></textarea>
+      </div>
+      <div class="grid gap-5 sm:grid-cols-2">
+        <app-input
+          label="Precio (S/)"
+          inputId="producto-precio"
+          placeholder="0.00"
+          [formField]="fields.precio"
+          [submitted]="attempted()"
+        />
+        <div>
+          <label for="producto-tipo" class="block text-xs font-semibold">Tipo</label>
+          <select
+            id="producto-tipo"
+            [formField]="fields.tipo"
+            [attr.aria-invalid]="attempted() && fields.tipo().invalid() ? 'true' : null"
+            [attr.aria-describedby]="attempted() && fields.tipo().invalid() ? 'tipo-error' : null"
+            class="mt-2 w-full rounded-xl bg-base-300 px-4 py-2.5 text-sm outline-2 outline-transparent focus-visible:outline-secondary"
+          >
+            <option value="">Selecciona un tipo</option>
+            @for (tipo of tipos; track tipo.value) {
+              <option [value]="tipo.value">{{ tipo.label }}</option>
+            }
+          </select>
+          @if (attempted() && fields.tipo().invalid()) {
+            <p id="tipo-error" role="alert" class="mt-1 text-xs text-error">Selecciona un tipo.</p>
+          }
+        </div>
+      </div>
+    </section>
+
+    <section aria-labelledby="imagen-producto">
+      <div class="mb-5 border-b border-base-content/10 pb-4">
+        <h2 id="imagen-producto" class="text-lg font-semibold">Imagen del producto</h2>
+        <p class="mt-1 text-sm text-base-content/60">
+          Añade una foto para identificarlo fácilmente. Es opcional.
+        </p>
+      </div>
+      <app-image-upload
+        inputId="producto-imagen"
+        [existingImageUrl]="producto()?.imageUrl ?? null"
+        [disabled]="saving()"
+        (selectionChange)="imageChanged($event)"
+      />
+    </section>
   </div>
   @if (error()) {
-    <p role="alert" class="text-sm text-error">{{ error() }}</p>
+    <p role="alert" class="mx-5 mb-4 rounded-xl bg-error/10 px-4 py-3 text-sm text-error sm:mx-7">
+      {{ error() }}
+    </p>
   }
-  <div class="flex flex-wrap items-center gap-3">
+  <div
+    class="flex flex-wrap items-center justify-end gap-3 border-t border-base-content/10 bg-base-100/40 px-5 py-4 sm:px-7"
+  >
+    <a appButton routerLink="/admin/productos" color="neutral" variant="ghost">Cancelar</a>
     <button appButton type="submit" [disabled]="saving() || !savingEnabled()">
-      {{ saving() ? 'Guardando…' : 'Guardar producto' }}
+      <svg lucideSave class="size-4" aria-hidden="true"></svg>
+      {{ saving() ? 'Guardando…' : producto() ? 'Guardar cambios' : 'Crear producto' }}
     </button>
-    <a routerLink="/admin/productos" class="text-primary underline">Cancelar</a>
   </div>
 </form>

@@ -1,14 +1,16 @@
 import { Component, input, linkedSignal, output, signal } from '@angular/core';
 import { FormField, form, maxLength, pattern, required } from '@angular/forms/signals';
 import { RouterLink } from '@angular/router';
+import { LucideSave } from '@lucide/angular';
 import { Button } from '../../../shared/components/button/button';
+import { ImageSelection, ImageUpload } from '../../../shared/components/image-upload/image-upload';
 import { Input } from '../../../shared/components/input/input';
 import { DatosProducto, Producto, TipoProducto } from '../../interfaces/producto';
 import { TIPOS_PRODUCTO } from '../../interfaces/tipos-producto';
 
 @Component({
   selector: 'app-producto-form',
-  imports: [FormField, Input, Button, RouterLink],
+  imports: [FormField, Input, Button, RouterLink, ImageUpload, LucideSave],
   templateUrl: './producto-form.html',
 })
 export class ProductoForm {
@@ -41,21 +43,9 @@ export class ProductoForm {
     required(schema.tipo, { message: 'Selecciona un tipo.' });
   });
 
-  protected selectImage(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    const file = input.files?.[0] ?? null;
-    this.image.set(null);
-    this.imageError.set('');
-    if (!file) return;
-    if (
-      !['image/jpeg', 'image/png', 'image/webp'].includes(file.type) ||
-      file.size > 5 * 1024 * 1024
-    ) {
-      this.imageError.set('La imagen debe ser JPG, PNG o WebP y no superar 5 MB.');
-      input.value = '';
-      return;
-    }
-    this.image.set(file);
+  protected imageChanged(selection: ImageSelection): void {
+    this.image.set(selection.file);
+    this.imageError.set(selection.error);
   }
 
   protected submit(event: Event): void {

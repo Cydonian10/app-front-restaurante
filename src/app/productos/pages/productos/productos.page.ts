@@ -1,8 +1,10 @@
 import { DecimalPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { LucideImage, LucidePencil, LucidePlus, LucideTrash } from '@lucide/angular';
 import { injectMutation, injectQuery, QueryClient } from '@tanstack/angular-query';
 import { ConfirmDialog } from '../../../shared/components/confirm-dialog/confirm-dialog';
+import { Button } from '../../../shared/components/button/button';
 import { Input } from '../../../shared/components/input/input';
 import { Pagination } from '../../../shared/components/pagination/pagination';
 import { Table, TableColumn } from '../../../shared/components/table/table';
@@ -13,7 +15,19 @@ import { ProductosNoticeService } from '../../services/productos-notice.service'
 
 @Component({
   selector: 'app-productos-page',
-  imports: [DecimalPipe, Input, Pagination, Table, RouterLink, ConfirmDialog],
+  imports: [
+    DecimalPipe,
+    Input,
+    Pagination,
+    Table,
+    RouterLink,
+    ConfirmDialog,
+    Button,
+    LucideImage,
+    LucidePencil,
+    LucidePlus,
+    LucideTrash,
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './productos.page.html',
 })

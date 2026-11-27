@@ -2,7 +2,7 @@ import { Directive, computed, input } from '@angular/core';
 
 type ButtonColor = 'primary' | 'secondary' | 'success' | 'warning' | 'error' | 'neutral';
 type ButtonVariant = 'solid' | 'soft' | 'outline' | 'ghost';
-type ButtonSize = 'sm' | 'md' | 'lg';
+type ButtonSize = 'sm' | 'md' | 'lg' | 'icon';
 
 const colors: Record<ButtonColor, Record<ButtonVariant, string>> = {
   primary: {
@@ -44,7 +44,7 @@ const colors: Record<ButtonColor, Record<ButtonVariant, string>> = {
 };
 
 @Directive({
-  selector: 'button[appButton]',
+  selector: 'button[appButton], a[appButton]',
   host: {
     '[class]': 'classes()',
   },
@@ -56,12 +56,13 @@ export class Button {
 
   protected readonly classes = computed(() => {
     const sizes: Record<ButtonSize, string> = {
-      sm: 'px-3 py-1.5 text-sm',
-      md: 'px-4 py-2',
+      sm: 'min-h-9 px-3 py-1.5 text-sm',
+      md: 'min-h-10 px-4 py-2 text-sm',
       lg: 'px-6 py-3.5',
+      icon: 'size-10 shrink-0',
     };
     return [
-      'inline-flex items-center justify-center gap-2 rounded-xl font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:cursor-not-allowed disabled:opacity-50',
+      'inline-flex cursor-pointer items-center justify-center gap-2 rounded-xl font-semibold no-underline transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-secondary disabled:cursor-not-allowed disabled:opacity-50',
       colors[this.color()][this.variant()],
       sizes[this.size()],
       this.variant() === 'outline' ? 'outline outline-1 -outline-offset-1' : '',

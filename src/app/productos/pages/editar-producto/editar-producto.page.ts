@@ -1,17 +1,30 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, inject } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { LucideArrowLeft } from '@lucide/angular';
 import { injectMutation, injectQuery, QueryClient } from '@tanstack/angular-query';
 import { ProductoForm } from '../../components/producto-form/producto-form';
 import { DatosProducto } from '../../interfaces/producto';
 import { ProductosNoticeService } from '../../services/productos-notice.service';
 import { ProductosService } from '../../services/productos.service';
+import { Button } from '../../../shared/components/button/button';
 
 @Component({
   selector: 'app-editar-producto',
-  imports: [ProductoForm, RouterLink],
+  imports: [ProductoForm, RouterLink, Button, LucideArrowLeft],
   template: `<section class="mx-auto max-w-7xl">
-    <h1 class="text-3xl font-semibold">Editar producto</h1>
+    <a
+      appButton
+      routerLink="/admin/productos"
+      variant="ghost"
+      color="neutral"
+      size="sm"
+      class="-ml-3 mb-5"
+    >
+      <svg lucideArrowLeft class="size-4" aria-hidden="true"></svg> Volver a productos
+    </a>
+    <h1 class="text-3xl font-semibold tracking-tight">Editar producto</h1>
+    <p class="mt-2 text-sm text-base-content/65">Actualiza los detalles de tu producto.</p>
     @if (query.isPending()) {
       <p class="mt-4" role="status">Cargando producto…</p>
     } @else if (query.isError()) {

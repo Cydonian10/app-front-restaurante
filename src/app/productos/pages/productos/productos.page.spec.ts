@@ -129,8 +129,9 @@ describe('ProductosPage', () => {
       fixture.detectChanges();
       expect(fixture.nativeElement.textContent).toContain('Disponibilidad actualizada');
     });
-    const deleteButton = [...fixture.nativeElement.querySelectorAll('button')].find(
-      (b: HTMLButtonElement) => b.textContent?.includes('Dar de baja'),
+    expect(fixture.nativeElement.querySelector('a[aria-label="Editar: Lomo"]')).toBeTruthy();
+    const deleteButton = fixture.nativeElement.querySelector(
+      'button[aria-label="Dar de baja: Lomo"]',
     ) as HTMLButtonElement;
     deleteButton.click();
     fixture.detectChanges();
