@@ -1,14 +1,64 @@
 @import 'tailwindcss';
 @theme inline {
-  --color-base-100: var(--base-100); --color-base-200: var(--base-200); --color-base-300: var(--base-300);
-  --color-base-content: var(--base-content); --color-primary: var(--primary); --color-primary-content: #fff;
-  --color-secondary: var(--secondary); --color-secondary-content: #fff; --color-neutral: var(--base-300);
-  --color-neutral-content: var(--base-content); --color-error: #db4545; --color-error-content: #fff;
-  --color-success: #16804a; --color-success-content: #fff; --color-warning: #aa6100; --color-warning-content: #fff;
+  --color-base-100: var(--base-100);
+  --color-base-200: var(--base-200);
+  --color-base-300: var(--base-300);
+  --color-base-content: var(--base-content);
+  --color-primary: var(--primary);
+  --color-primary-content: #fff;
+  --color-secondary: var(--secondary);
+  --color-secondary-content: #fff;
+  --color-neutral: var(--base-300);
+  --color-neutral-content: var(--base-content);
+  --color-error: #db4545;
+  --color-error-content: #fff;
+  --color-success: #16804a;
+  --color-success-content: #fff;
+  --color-warning: #aa6100;
+  --color-warning-content: #fff;
 }
-:root { color-scheme: dark; --base-100: #08080a; --base-200: #171719; --base-300: #222224; --base-content: #e4e4e7; --primary: #4854c5; --secondary: #8992f5; font-family: system-ui, sans-serif; }
-:root[data-theme='light'] { color-scheme: light; --base-100: #f2f2f4; --base-200: #fff; --base-300: #e9e9ed; --base-content: #202127; --primary: #4854c5; --secondary: #4854c5; }
-body { margin: 0; background: var(--base-100); color: var(--base-content); }
+:root {
+  color-scheme: dark;
+  --base-100: #08080a;
+  --base-200: #171719;
+  --base-300: #222224;
+  --base-content: #e4e4e7;
+  --primary: #4854c5;
+  --secondary: #8992f5;
+  font-family: system-ui, sans-serif;
+}
+:root[data-theme='light'] {
+  color-scheme: light;
+  --base-100: #f2f2f4;
+  --base-200: #fff;
+  --base-300: #e9e9ed;
+  --base-content: #202127;
+  --primary: #4854c5;
+  --secondary: #4854c5;
+}
+body {
+  margin: 0;
+  background: var(--base-100);
+  color: var(--base-content);
+}
 
-@keyframes field-error-in { from { opacity: 0; transform: translateY(-0.25rem); } to { opacity: 1; transform: translateY(0); } }
-@keyframes field-error-out { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(-0.25rem); } }
+@keyframes field-error-in {
+  from {
+    opacity: 0;
+    transform: translateY(-0.25rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes field-error-out {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-0.25rem);
+  }
+}
