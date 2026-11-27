@@ -56,24 +56,41 @@
   <ng-template #tipoCelda let-producto>{{ typeLabel(producto.tipo) }}</ng-template>
   <ng-template #precio let-producto>S/ {{ producto.precio | number: '1.2-2' }}</ng-template>
   <ng-template #disponibilidad let-producto>
-    <span
-      [class.text-success]="producto.disponible"
-      [class.text-base-content/60]="!producto.disponible"
-      >{{ producto.disponible ? 'Disponible' : 'No disponible' }}</span
+    <button
+      type="button"
+      class="text-primary underline disabled:opacity-50"
+      [disabled]="availabilityMutation.isPending() || deleteMutation.isPending()"
+      [attr.aria-label]="
+        (producto.disponible ? 'Marcar no disponible: ' : 'Marcar disponible: ') + producto.nombre
+      "
+      (click)="changeAvailability(producto)"
     >
+      {{ producto.disponible ? 'Disponible' : 'No disponible' }}
+    </button>
   </ng-template>
   <ng-template #acciones let-producto>
     <div class="flex items-center gap-3">
       <a [routerLink]="['/admin/productos', producto.id, 'editar']" class="text-primary underline"
         >Editar</a
       >
-      <button type="button" disabled class="cursor-not-allowed text-base-content/50">
+      <button
+        type="button"
+        [disabled]="availabilityMutation.isPending() || deleteMutation.isPending()"
+        class="text-error underline disabled:opacity-50"
+        (click)="selectForDeletion(producto)"
+      >
         Dar de baja
       </button>
     </div>
   </ng-template>
 
   <div class="mt-6" aria-live="polite">
+    @if (message()) {
+      <p role="status" class="mb-4 text-success">{{ message() }}</p>
+    }
+    @if (actionError()) {
+      <p role="alert" class="mb-4 text-error">{{ actionError() }}</p>
+    }
     @if (query.isError()) {
       <div role="alert" class="rounded-xl border border-error/30 p-4">
         <p>No se pudieron cargar los productos.</p>
@@ -108,4 +125,14 @@
       }
     }
   </div>
+  <app-confirm-dialog
+    [open]="selected() !== null"
+    title="Dar de baja producto"
+    [message]="'¿Dar de baja ' + (selected()?.nombre ?? '') + '?'"
+    confirmLabel="Dar de baja"
+    [busy]="deleteMutation.isPending()"
+    [error]="deleteError()"
+    (cancelled)="selected.set(null)"
+    (confirmed)="confirmDelete()"
+  />
 </section>

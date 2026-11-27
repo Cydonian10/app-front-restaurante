@@ -24,6 +24,7 @@ export class ConfirmDialog {
   readonly confirmLabel = input('Confirmar');
   readonly cancelLabel = input('Cancelar');
   readonly busy = input(false);
+  readonly error = input('');
   readonly confirmed = output<void>();
   readonly cancelled = output<void>();
   protected readonly titleId = `confirm-dialog-title-${++nextId}`;

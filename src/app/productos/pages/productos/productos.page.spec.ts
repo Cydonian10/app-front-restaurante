@@ -59,16 +59,22 @@ describe('ProductosPage', () => {
       req.flush({ ...response, page: 2 });
     });
     const search = fixture.nativeElement.querySelector('#buscar-producto') as HTMLInputElement;
-    search.value = 'Lomo'; search.dispatchEvent(new Event('input')); fixture.detectChanges();
+    search.value = 'Lomo';
+    search.dispatchEvent(new Event('input'));
+    fixture.detectChanges();
     await vi.waitFor(() => {
       const req = requests.expectOne((r) => r.params.get('nombre') === 'Lomo');
-      expect(req.request.params.get('page')).toBe('1'); req.flush(response);
+      expect(req.request.params.get('page')).toBe('1');
+      req.flush(response);
     });
     const select = fixture.nativeElement.querySelector('#tipo-producto') as HTMLSelectElement;
-    select.value = 'BEBIDA'; select.dispatchEvent(new Event('change')); fixture.detectChanges();
+    select.value = 'BEBIDA';
+    select.dispatchEvent(new Event('change'));
+    fixture.detectChanges();
     await vi.waitFor(() => {
       const req = requests.expectOne((r) => r.params.get('tipo') === 'BEBIDA');
-      expect(req.request.params.get('nombre')).toBe('Lomo'); req.flush({ ...response, items: [] });
+      expect(req.request.params.get('nombre')).toBe('Lomo');
+      req.flush({ ...response, items: [] });
     });
   });
 
@@ -90,6 +96,65 @@ describe('ProductosPage', () => {
     await vi.waitFor(() => {
       fixture.detectChanges();
       expect(fixture.nativeElement.textContent).toContain('No hay registros');
+    });
+  });
+
+  it('cambia disponibilidad y confirma la baja antes de actualizar el listado', async () => {
+    const fixture = TestBed.createComponent(ProductosPage);
+    fixture.detectChanges();
+    const dialog = fixture.nativeElement.querySelector('dialog') as HTMLDialogElement;
+    dialog.showModal = vi.fn(() => dialog.setAttribute('open', ''));
+    dialog.close = vi.fn(() => dialog.removeAttribute('open'));
+    requests.expectOne((r) => r.url.endsWith('/products/admin')).flush(response);
+    await vi.waitFor(() => {
+      fixture.detectChanges();
+      expect(fixture.nativeElement.textContent).toContain('Lomo');
+    });
+    (
+      fixture.nativeElement.querySelector(
+        '[aria-label="Marcar no disponible: Lomo"]',
+      ) as HTMLButtonElement
+    ).click();
+    await vi.waitFor(() => {
+      const req = requests.expectOne((r) => r.url.endsWith('/products/1/disponibilidad'));
+      expect(req.request.body).toEqual({ disponible: false });
+      req.flush({ id: '1', disponible: false });
+    });
+    await vi.waitFor(() =>
+      requests
+        .expectOne((r) => r.url.endsWith('/products/admin'))
+        .flush({ ...response, items: [{ ...response.items[0], disponible: false }] }),
+    );
+    await vi.waitFor(() => {
+      fixture.detectChanges();
+      expect(fixture.nativeElement.textContent).toContain('Disponibilidad actualizada');
+    });
+    const deleteButton = [...fixture.nativeElement.querySelectorAll('button')].find(
+      (b: HTMLButtonElement) => b.textContent?.includes('Dar de baja'),
+    ) as HTMLButtonElement;
+    deleteButton.click();
+    fixture.detectChanges();
+    expect(dialog.open).toBe(true);
+    dialog.querySelectorAll('button')[0].click();
+    fixture.detectChanges();
+    expect(dialog.open).toBe(false);
+    requests.expectNone((r) => r.method === 'DELETE');
+    deleteButton.click();
+    fixture.detectChanges();
+    dialog.querySelectorAll('button')[1].click();
+    await vi.waitFor(() =>
+      requests
+        .expectOne((r) => r.method === 'DELETE' && r.url.endsWith('/products/1'))
+        .flush({ id: '1' }),
+    );
+    await vi.waitFor(() =>
+      requests
+        .expectOne((r) => r.url.endsWith('/products/admin'))
+        .flush({ ...response, items: [], total: 0, totalPages: 0 }),
+    );
+    await vi.waitFor(() => {
+      fixture.detectChanges();
+      expect(fixture.nativeElement.textContent).toContain('Producto dado de baja correctamente');
     });
   });
 });
