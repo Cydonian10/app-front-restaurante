@@ -13,7 +13,16 @@
       @for (row of rows(); track $index) {
         <tr class="border-b border-base-content/5 last:border-0 hover:bg-base-300/40">
           @for (column of columns(); track column.key) {
-            <td class="px-5 py-4">{{ row[column.key] }}</td>
+            <td class="px-5 py-4">
+              @if (cellTemplates()[column.key]; as template) {
+                <ng-container
+                  [ngTemplateOutlet]="template"
+                  [ngTemplateOutletContext]="{ $implicit: row }"
+                />
+              } @else {
+                {{ $any(row)[column.key] }}
+              }
+            </td>
           }
         </tr>
       } @empty {
