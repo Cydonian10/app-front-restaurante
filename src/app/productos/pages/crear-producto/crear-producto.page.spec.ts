@@ -2,12 +2,66 @@ import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { provideRouter, Router } from '@angular/router';
+import { RouterTestingHarness } from '@angular/router/testing';
 import { provideTanStackQuery, QueryClient } from '@tanstack/angular-query';
 import { vi } from 'vitest';
 import { CrearProductoPage } from './crear-producto.page';
-import { ProductosNoticeService } from '../../services/productos-notice.service';
+import { AlertService } from '../../../shared/services/alert';
+import { AlertViewport } from '../../../shared/components/alert-viewport/alert-viewport';
+import { ProductosPage } from '../productos/productos.page';
 
 describe('CrearProductoPage', () => {
+  it('muestra una notificación que se puede cerrar al crear y volver al listado', async () => {
+    TestBed.configureTestingModule({
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        provideRouter([
+          { path: 'admin/productos/crear', component: CrearProductoPage },
+          { path: 'admin/productos', component: ProductosPage },
+        ]),
+        provideTanStackQuery(() => new QueryClient()),
+      ],
+    });
+    const viewport = TestBed.createComponent(AlertViewport);
+    viewport.detectChanges();
+    const harness = await RouterTestingHarness.create('/admin/productos/crear');
+    for (const [selector, value] of [
+      ['#producto-nombre', 'Tarta'],
+      ['#producto-precio', '10.00'],
+      ['#producto-tipo', 'POSTRE'],
+    ]) {
+      const input = harness.routeNativeElement!.querySelector(selector) as HTMLInputElement;
+      input.value = value;
+      input.dispatchEvent(new Event('input'));
+      harness.detectChanges();
+    }
+    harness
+      .routeNativeElement!.querySelector('form')!
+      .dispatchEvent(new Event('submit', { cancelable: true }));
+    const requests = TestBed.inject(HttpTestingController);
+    await vi.waitFor(() =>
+      requests.expectOne('http://localhost:3000/api/v1/products').flush({ id: '1' }),
+    );
+    await vi.waitFor(() => {
+      const request = requests.expectOne((req) => req.url.endsWith('/products/admin'));
+      request.flush({ items: [], page: 1, limit: 10, total: 0, totalPages: 0 });
+    });
+    await vi.waitFor(() => {
+      viewport.detectChanges();
+      expect(
+        viewport.nativeElement.querySelector('app-alert [role="status"]')?.textContent,
+      ).toContain('Producto creado correctamente.');
+    });
+    (
+      viewport.nativeElement.querySelector(
+        '[aria-label="Cerrar notificación"]',
+      ) as HTMLButtonElement
+    ).click();
+    expect(TestBed.inject(AlertService).alerts()).toHaveLength(0);
+    requests.verify();
+  });
+
   it('conserva los datos ante un error y confirma la creación exitosa', async () => {
     TestBed.configureTestingModule({
       imports: [CrearProductoPage],
@@ -55,7 +109,9 @@ describe('CrearProductoPage', () => {
       requests.expectOne('http://localhost:3000/api/v1/products').flush({ id: '1' }),
     );
     await vi.waitFor(() => expect(navigate).toHaveBeenCalledWith('/admin/productos'));
-    expect(TestBed.inject(ProductosNoticeService).consume()).toBe('Producto creado correctamente.');
+    expect(TestBed.inject(AlertService).alerts().at(-1)?.message).toBe(
+      'Producto creado correctamente.',
+    );
     requests.verify();
   });
 

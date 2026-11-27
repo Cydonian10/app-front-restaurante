@@ -3,6 +3,7 @@ import { FormField, form, maxLength, pattern, required } from '@angular/forms/si
 import { RouterLink } from '@angular/router';
 import { LucideSave } from '@lucide/angular';
 import { Button } from '../../../shared/components/button/button';
+import { Alert } from '../../../shared/components/alert/alert';
 import { ImageSelection, ImageUpload } from '../../../shared/components/image-upload/image-upload';
 import { Input } from '../../../shared/components/input/input';
 import { DatosProducto, Producto, TipoProducto } from '../../interfaces/producto';
@@ -10,7 +11,7 @@ import { TIPOS_PRODUCTO } from '../../interfaces/tipos-producto';
 
 @Component({
   selector: 'app-producto-form',
-  imports: [FormField, Input, Button, RouterLink, ImageUpload, LucideSave],
+  imports: [FormField, Input, Button, RouterLink, ImageUpload, LucideSave, Alert],
   templateUrl: './producto-form.html',
 })
 export class ProductoForm {

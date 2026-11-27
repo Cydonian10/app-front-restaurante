@@ -113,13 +113,7 @@
     </div>
   </ng-template>
 
-  <div class="mt-7" aria-live="polite">
-    @if (message()) {
-      <p role="status" class="mb-4 text-success">{{ message() }}</p>
-    }
-    @if (actionError()) {
-      <p role="alert" class="mb-4 text-error">{{ actionError() }}</p>
-    }
+  <div class="mt-7">
     @if (query.isError()) {
       <div role="alert" class="rounded-xl border border-error/30 p-4">
         <p>No se pudieron cargar los productos.</p>

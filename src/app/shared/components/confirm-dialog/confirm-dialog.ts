@@ -8,12 +8,13 @@ import {
   viewChild,
 } from '@angular/core';
 import { Button } from '../button/button';
+import { Alert } from '../alert/alert';
 
 let nextId = 0;
 
 @Component({
   selector: 'app-confirm-dialog',
-  imports: [Button],
+  imports: [Button, Alert],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './confirm-dialog.html',
 })

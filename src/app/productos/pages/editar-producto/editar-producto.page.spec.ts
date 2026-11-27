@@ -6,7 +6,7 @@ import { RouterTestingHarness } from '@angular/router/testing';
 import { provideTanStackQuery, QueryClient } from '@tanstack/angular-query';
 import { vi } from 'vitest';
 import { EditarProductoPage } from './editar-producto.page';
-import { ProductosNoticeService } from '../../services/productos-notice.service';
+import { AlertService } from '../../../shared/services/alert';
 
 describe('EditarProductoPage', () => {
   beforeEach(() =>
@@ -96,7 +96,7 @@ describe('EditarProductoPage', () => {
     await vi.waitFor(() => expect(navigate).toHaveBeenCalledWith('/admin/productos'));
     expect(client.getQueryState(listKey)?.isInvalidated).toBe(true);
     expect(client.getQueryState(['productos', 'detail', 'abc'])?.isInvalidated).toBe(true);
-    expect(TestBed.inject(ProductosNoticeService).consume()).toBe(
+    expect(TestBed.inject(AlertService).alerts().at(-1)?.message).toBe(
       'Producto actualizado correctamente.',
     );
     requests.verify();

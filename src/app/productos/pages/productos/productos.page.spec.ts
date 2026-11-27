@@ -5,6 +5,7 @@ import { provideRouter } from '@angular/router';
 import { provideTanStackQuery, QueryClient } from '@tanstack/angular-query';
 import { vi } from 'vitest';
 import { ProductosPage } from './productos.page';
+import { AlertService } from '../../../shared/services/alert';
 
 describe('ProductosPage', () => {
   let requests: HttpTestingController;
@@ -126,8 +127,9 @@ describe('ProductosPage', () => {
         .flush({ ...response, items: [{ ...response.items[0], disponible: false }] }),
     );
     await vi.waitFor(() => {
-      fixture.detectChanges();
-      expect(fixture.nativeElement.textContent).toContain('Disponibilidad actualizada');
+      expect(TestBed.inject(AlertService).alerts().at(-1)?.message).toContain(
+        'Disponibilidad actualizada',
+      );
     });
     expect(fixture.nativeElement.querySelector('a[aria-label="Editar: Lomo"]')).toBeTruthy();
     const deleteButton = fixture.nativeElement.querySelector(
@@ -154,8 +156,9 @@ describe('ProductosPage', () => {
         .flush({ ...response, items: [], total: 0, totalPages: 0 }),
     );
     await vi.waitFor(() => {
-      fixture.detectChanges();
-      expect(fixture.nativeElement.textContent).toContain('Producto dado de baja correctamente');
+      expect(TestBed.inject(AlertService).alerts().at(-1)?.message).toContain(
+        'Producto dado de baja correctamente',
+      );
     });
   });
 });

@@ -5,9 +5,9 @@ import { LucideArrowLeft } from '@lucide/angular';
 import { injectMutation, injectQuery, QueryClient } from '@tanstack/angular-query';
 import { ProductoForm } from '../../components/producto-form/producto-form';
 import { DatosProducto } from '../../interfaces/producto';
-import { ProductosNoticeService } from '../../services/productos-notice.service';
 import { ProductosService } from '../../services/productos.service';
 import { Button } from '../../../shared/components/button/button';
+import { AlertService } from '../../../shared/services/alert';
 
 @Component({
   selector: 'app-editar-producto',
@@ -53,16 +53,16 @@ export class EditarProductoPage {
   private readonly service = inject(ProductosService);
   private readonly client = inject(QueryClient);
   private readonly router = inject(Router);
-  private readonly notice = inject(ProductosNoticeService);
+  private readonly alerts = inject(AlertService);
   protected readonly mutation = injectMutation(() => this.service.update());
   protected async save(data: DatosProducto): Promise<void> {
     try {
       await this.mutation.mutateAsync({ id: this.id, data });
       await this.client.invalidateQueries({ queryKey: ['productos'], refetchType: 'none' });
-      this.notice.set('Producto actualizado correctamente.');
+      this.alerts.success('Producto actualizado correctamente.');
       await this.router.navigateByUrl('/admin/productos');
     } catch {
-      /* La mutación conserva el error para el formulario. */
+      this.alerts.error('No se pudo guardar el producto. Inténtalo de nuevo.');
     }
   }
   protected readonly query = injectQuery(() => ({

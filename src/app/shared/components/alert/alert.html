@@ -1,0 +1,63 @@
+<div
+  class="flex items-start gap-3 rounded-xl border px-4 py-3 text-base-content"
+  [class]="
+    (floating() ? 'border-l-4 bg-base-200 shadow-xl ' : '') +
+    (type() === 'success'
+      ? floating()
+        ? 'border-success/60'
+        : 'border-success/30 bg-success/10'
+      : type() === 'error'
+        ? floating()
+          ? 'border-error/60'
+          : 'border-error/30 bg-error/10'
+        : type() === 'warning'
+          ? floating()
+            ? 'border-warning/60'
+            : 'border-warning/30 bg-warning/10'
+          : floating()
+            ? 'border-secondary/60'
+            : 'border-secondary/30 bg-secondary/10')
+  "
+>
+  @switch (type()) {
+    @case ('success') {
+      <svg lucideCircleCheck class="mt-0.5 size-5 shrink-0 text-success" aria-hidden="true"></svg>
+    }
+    @case ('error') {
+      <svg lucideCircleX class="mt-0.5 size-5 shrink-0 text-error" aria-hidden="true"></svg>
+    }
+    @case ('warning') {
+      <svg
+        lucideTriangleExclamationPoint
+        class="mt-0.5 size-5 shrink-0 text-warning"
+        aria-hidden="true"
+      ></svg>
+    }
+    @default {
+      <svg lucideInfo class="mt-0.5 size-5 shrink-0 text-secondary" aria-hidden="true"></svg>
+    }
+  }
+  <div
+    class="min-w-0 flex-1 text-sm leading-5"
+    [attr.role]="type() === 'error' ? 'alert' : 'status'"
+  >
+    @if (title()) {
+      <p class="font-semibold">{{ title() }}</p>
+    }
+    <p [class.mt-1]="title()">{{ message() }}</p>
+  </div>
+  @if (dismissible()) {
+    <button
+      appButton
+      type="button"
+      variant="ghost"
+      color="neutral"
+      size="icon"
+      class="-my-2 -mr-2"
+      aria-label="Cerrar notificación"
+      (click)="closed.emit()"
+    >
+      <svg lucideX class="size-4" aria-hidden="true"></svg>
+    </button>
+  }
+</div>
