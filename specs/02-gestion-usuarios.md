@@ -1,6 +1,6 @@
 # SPEC 02 — Gestión administrativa de usuarios
 
-> **Estado:** Borrador
+> **Estado:** Aprobado
 > **Dependencias:** SPEC 01
 > **Fecha:** 2026-11-27
 > **Objetivo:** Permitir a administradores listar y crear usuarios con sus datos personales desde el panel administrativo.
